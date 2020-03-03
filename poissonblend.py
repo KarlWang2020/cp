@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 
 # Read source, target and mask for a given id
-def Read(id, path=""):
+def Read(id, path="D:\WZQ\Images"):
     source = plt.imread(path + "source_" + id + ".jpg") / 255
     target = plt.imread(path + "target_" + id + ".jpg") / 255
     mask = plt.imread(path + "mask_" + id + ".jpg") / 255
@@ -47,8 +47,8 @@ def AlignImages(mask, source, target, offset):
 
 
 # Pyramid Blend
-def PyramidBlend(source, mask, target):
-    return source * mask + target * (1 - mask)
+#def PyramidBlend(source, mask, target):
+ #   return source * mask + target * (1 - mask)
 
 
 
@@ -57,7 +57,7 @@ def PyramidBlend(source, mask, target):
 
 
 # Poisson Blend for each channel
-def PoissonBlend_each(source, mask, target, isMix):
+def PoissonBlend_each(source, mask, target):
     height = len(source)
     width = len(source[0])
 
@@ -67,7 +67,7 @@ def PoissonBlend_each(source, mask, target, isMix):
     k = 0
     for y in range(height):
         for x in range(width):
-            if mask[y][x]==1:
+            if mask[y,x]==1:
                 order[y][x] = k
                 k = k + 1
             else:
@@ -127,20 +127,20 @@ def PoissonReplace(res, source, target, mask):
         for x in range(len(source[0])):
             if mask[y][x]==1:
 
-                target[y][x] = res[k]
+                target[x,y] = res[k]
                 k = k + 1
     return target
 
 #for each channel R G B, implement Poisson Blending
 def PoissonBlend(source,target,mask,ismix=False):
 
-    sourceR= source[:, :, 2]
+    sourceR= source[:,:,2]
     sourceG =source[:, :, 1]
     sourceB =source[:, :, 0]
 
-    targetR=target[::2]
-    targetG=target[::1]
-    targetB=target[::0]
+    targetR=target[:,:,2]
+    targetG=target[:,:,1]
+    targetB=target[:,:,0]
 
 
 
@@ -157,8 +157,8 @@ def PoissonBlend(source,target,mask,ismix=False):
 
 if __name__ == '__main__':
     # Setting up the input output paths
-    inputDir = '../Images/'
-    outputDir = '../Results/'
+    inputDir = 'D://WZQ//Images//'
+    outputDir = 'D://WZQ//Results//'
 
     # False for source gradient, true for mixing gradients
     isMix = False
@@ -183,14 +183,14 @@ if __name__ == '__main__':
 
 
         # Implement the PyramidBlend function (Task 1)
-        pyramidOutput = PyramidBlend(source, mask, target)
+        #pyramidOutput = PyramidBlend(source, mask, target)
 
         # Implement the PoissonBlend function (Task 2)
         poissonOutput = PoissonBlend(source, mask, target, isMix)
 
         # Writing the result
 
-        plt.imsave("{}pyramid_{}.jpg".format(outputDir, str(index).zfill(2)), pyramidOutput)
+        #plt.imsave("{}pyramid_{}.jpg".format(outputDir, str(index).zfill(2)), pyramidOutput)
 
         if not isMix:
             plt.imsave("{}poisson_{}.jpg".format(outputDir, str(index).zfill(2)), poissonOutput)
