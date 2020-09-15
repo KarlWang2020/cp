@@ -15,34 +15,26 @@
 const int MAX_DATA_SIZE = 100;
 
 void* Get_inaddr(struct sockaddr* sa) { // to get input socket address
-	if (sa->sa_family == AF_INET) {
-		return &(((struct sockaddr_in*) sa)->sin_addr);
-	}
-	return &(((struct sockaddr_in6*) sa)->sin6_addr);
-}
+	if (sa->sa_family == AF_INET) {return &(((struct sockaddr_in*) sa)->sin_addr);}
+	return &(((struct sockaddr_in6*) sa)->sin6_addr);}
 int writen(int sockfd, char* buf) {
 	int Nbytes;  // Nbytes marks total bytes here
 	while ((Nbytes = send(sockfd, buf, MAX_DATA_SIZE - 1, 0)) == -1 && errno ==
-		EINTR) {		continue; }
-return Nbytes;  
-}
+		EINTR) {ontinue; }
+return Nbytes; }
 
 int readline(int sockfd, char* recvbuf) { // readline from the socket
 	int Nbytes;
-	while (errno== EINTR&&(Nbytes = recv(sockfd, recvbuf, MAX_DATA_SIZE - 1, 0)) == -1  ) {
-		
-	}
+	while (errno== EINTR&&(Nbytes = recv(sockfd, recvbuf, MAX_DATA_SIZE - 1, 0)) == -1  ) {}
 	return Nbytes;
 }
 int server_lookup_connect(char* host, char* server_port) {   //this function looks up to connect
 	int status;
 	int sock_fd;
 	struct addrinfo hints, * server_info, * p;
-	
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
-	
 	if ((status = getaddrinfo(host, server_port, &hints, &server_info)) != 0) {
 		fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));    
 		return 2;
